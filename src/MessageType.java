@@ -1,0 +1,6 @@
+public enum MessageType {
+    USER_CONNECTING,
+    USERNAME_RECEIVED,
+    PROMPT_FOR_MESSAGE,
+    SENDING_MESSAGE
+}

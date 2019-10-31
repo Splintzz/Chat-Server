@@ -1,54 +1,64 @@
 import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class ChatInterface extends JFrame {
     private JTextField textField;
     private JButton sendButton;
-    private JSplitPane splitPane;
-    private JScrollPane scrollPane;
-    private JPanel inputPanel, topPanel, bottomPanel;
-    private JTextArea test;
+    public JTextArea messageArea;
+    private Client client;
 
-    public ChatInterface() {
-        test = new JTextArea();
+    public ChatInterface(Client client) {
+        this.client = client;
+
+        initializeMessageArea();
         initializeComponents();
         initializeFrame();
     }
 
+    private void initializeMessageArea() {
+        messageArea = new JTextArea();
+
+        messageArea.setSize(InterfaceConstants.FRAME_DIMENSION);
+        messageArea.setVisible(true);
+        messageArea.setEditable(false);
+    }
+
     private void initializeFrame() {
-        this.setVisible(true);
         this.setSize(InterfaceConstants.FRAME_DIMENSION);
+        this.setVisible(true);
+        this.setResizable(false);
     }
 
     private void initializeComponents() {
         initializeTextField();
         initializeSendButton();
-        splitPane = new JSplitPane();
 
-        bottomPanel = new JPanel();
-        topPanel = new JPanel();
-        scrollPane = new JScrollPane();
+        JPanel bottomPanel = new JPanel();
+        JPanel topPanel = new JPanel();
+        JPanel inputPanel = new JPanel();
 
-        inputPanel = new JPanel();
+        JSplitPane splitPane = new JSplitPane();
+        JScrollPane scrollPane = new JScrollPane();
+
         scrollPane.setViewportView(inputPanel);
-
-        setPreferredSize(new Dimension(500, 500));
 
         getContentPane().setLayout(new GridLayout());
         getContentPane().add(splitPane);
 
+        topPanel.add(messageArea);
+        scrollPane = new JScrollPane(messageArea);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
         splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-        splitPane.setDividerLocation(430);
+        splitPane.setDividerLocation(InterfaceConstants.VERTICAL_SPLIT_LOCATION);
         splitPane.setBottomComponent(bottomPanel);
-        splitPane.setTopComponent(test);
+        splitPane.setTopComponent(scrollPane);
 
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.add(inputPanel);
 
-        inputPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        inputPanel.setMaximumSize(InterfaceConstants.INPUT_PANEL_DIMENSION);
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 
         inputPanel.add(textField);
@@ -63,11 +73,8 @@ public class ChatInterface extends JFrame {
         sendButton.setVisible(true);
         sendButton.setSize(InterfaceConstants.SEND_BUTTON_DIMENSION);
         sendButton.setText(InterfaceConstants.SEND_BUTTON_LABEL);
-        sendButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        sendButton.addActionListener(e -> {
 
-            }
         });
     }
 
@@ -77,8 +84,17 @@ public class ChatInterface extends JFrame {
         textField.setColumns(InterfaceConstants.TEXT_FIELD_WIDTH);
     }
 
-    public static void main(String[] args) {
-        new ChatInterface();
+
+    public static void main(String[] args) throws InterruptedException {
+        ChatInterface c = new ChatInterface(null);
+        for(int i=0; i<10; ++i) {
+            TimeUnit.SECONDS.sleep(2);
+            if(i%2 == 0) {
+                c.messageArea.append("Brian: Xerris" + "\n");
+            }else {
+                c.messageArea.append("Abe: Xerris" + "\n");
+            }
+        }
     }
 
 }

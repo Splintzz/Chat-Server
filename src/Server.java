@@ -32,6 +32,9 @@ public class Server implements Runnable{
     public static void main(String[] args) {
         Server chatServer = new Server();
 
+        Thread clientAcceptor = new Thread(chatServer);
+        Thread serverThread = new Thread(chatServer);
+
         while(true) {
             Socket client = chatServer.acceptNewClient();
 
@@ -41,6 +44,7 @@ public class Server implements Runnable{
 
     public void addClient(Socket client) {
         clients.add(client);
+        ++numberOfClients;
     }
 
     public Socket acceptNewClient() {

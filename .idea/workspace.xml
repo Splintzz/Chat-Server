@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c1c70937-2663-476b-8799-9e43c9a8e22e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/InterfaceConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/InterfaceConstants.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ServerConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerConstants.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -80,7 +78,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

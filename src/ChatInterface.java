@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class ChatInterface extends JFrame {
@@ -74,7 +76,7 @@ public class ChatInterface extends JFrame {
         sendButton.setSize(InterfaceConstants.SEND_BUTTON_DIMENSION);
         sendButton.setText(InterfaceConstants.SEND_BUTTON_LABEL);
         sendButton.addActionListener(e -> {
-
+            sendMessage();
         });
     }
 
@@ -82,6 +84,29 @@ public class ChatInterface extends JFrame {
         textField = new JTextField();
         textField.setVisible(true);
         textField.setColumns(InterfaceConstants.TEXT_FIELD_WIDTH);
+    }
+
+    private void sendMessage() {
+        Message outGoingMessage = assembleMessage();
+
+        ObjectOutputStream outToServer = client.getOutToServerStream();
+
+        try {
+            outToServer.writeObject(outGoingMessage);
+            outToServer.flush();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Message assembleMessage() {
+        String messageText = textField.getText();
+
+        Message outGoingMessage = new Message(MessageType.SENDING_MESSAGE, messageText);
+
+        outGoingMessage.setClientNumber(client.getClientNumber());
+
+        return outGoingMessage;
     }
 
 

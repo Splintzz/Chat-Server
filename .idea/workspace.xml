@@ -3,10 +3,16 @@
   <component name="ChangeListManager">
     <list default="true" id="c1c70937-2663-476b-8799-9e43c9a8e22e" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/ChatInterface.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/Client.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/Client.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/Server.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/Server.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Chat Server/ServerConstants.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Chat Server/ServerConstants.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ChatInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ChatInterface.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/ServerConstants.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ServerConstants.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/User.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -32,7 +32,6 @@ public class Server implements Runnable{
     public static void main(String[] args) {
         Server chatServer = new Server();
 
-        Thread clientAcceptor = new Thread(chatServer);
         Thread serverThread = new Thread(chatServer);
 
         while(true) {
@@ -62,11 +61,23 @@ public class Server implements Runnable{
         Object receivedObject = null;
 
         try {
-            receivedObject = inputStreams.get(0).readObject();
+
         }catch (Exception e) {
             e.printStackTrace();
-        }finally {
-            return receivedObject;
+        }
+
+        return receivedObject;
+    }
+
+    private void echoMessage(Message message) {
+        try {
+            for (int client = 0; client < clients.size(); ++client) {
+                ObjectOutputStream outToClient = (ObjectOutputStream) (clients.get(client).getOutputStream());
+                outToClient.writeObject(message);
+                outToClient.flush();
+            }
+        }catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

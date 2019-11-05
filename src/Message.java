@@ -1,7 +1,7 @@
 public class Message {
     private MessageType messageType;
     private String message;
-    private int clientNumber;
+    private String clientUsername;
 
     public Message() {
         messageType = null;
@@ -29,11 +29,11 @@ public class Message {
         this.message = message;
     }
 
-    public int getClientNumber() {
-        return clientNumber;
+    public String getClientUsername() {
+        return clientUsername;
     }
 
-    public void setClientNumber(int clientNumber) {
-        this.clientNumber = clientNumber;
+    public void setClientUsername(String clientUsername) {
+        this.clientUsername = clientUsername;
     }
 }

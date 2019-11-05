@@ -3,17 +3,19 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class Client implements Runnable{
-    private int clientNumber;
+public class Client implements Runnable {
+    private String clientUsername;
     private ObjectOutputStream outToServer;
     private ObjectInputStream inFromServer;
     private Socket clientSocket;
+    private ChatInterface chatInterface;
 
     public Client() {
         try {
             clientSocket = new Socket(InetAddress.getByName(ServerConstants.IP), ServerConstants.PORT);
             outToServer = new ObjectOutputStream(clientSocket.getOutputStream());
             inFromServer = new ObjectInputStream(clientSocket.getInputStream());
+            chatInterface = new ChatInterface(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -29,13 +31,32 @@ public class Client implements Runnable{
 
     }
 
-
-    public int getClientNumber() {
-        return clientNumber;
+    private void register() {
+        //interface pops up a menu prompting for username
+        //username is set here
+        //username is sent to server to verify if the name is taken or not
     }
 
-    public void setClientNumber(int clientNumber) {
-        this.clientNumber = clientNumber;
+    private void receiveMessage() {
+        try {
+            Message receivedMessage = (Message) inFromServer.readObject();
+
+            displayMessage(receivedMessage);
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void displayMessage(Message receivedMessage) {
+        chatInterface.displayMessage(this, receivedMessage);
+    }
+
+    public String getClientUsername() {
+        return clientUsername;
+    }
+
+    public void setClientUsername(String clientUsername) {
+        this.clientUsername = clientUsername;
     }
 
     public ObjectOutputStream getOutToServerStream() {

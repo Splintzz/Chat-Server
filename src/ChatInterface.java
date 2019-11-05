@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -104,9 +103,13 @@ public class ChatInterface extends JFrame {
 
         Message outGoingMessage = new Message(MessageType.SENDING_MESSAGE, messageText);
 
-        outGoingMessage.setClientNumber(client.getClientNumber());
+        outGoingMessage.setClientUsername(client.getClientUsername());
 
         return outGoingMessage;
+    }
+
+    public void displayMessage(Client client, Message message) {
+        messageArea.append(client.getClientUsername() + ": " + message.getMessage());
     }
 
 

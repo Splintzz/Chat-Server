@@ -3,6 +3,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 public class Client implements Runnable {
     private String clientUsername;
@@ -22,19 +23,15 @@ public class Client implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+
         Thread thread = new Thread(new Client());
         thread.start();
     }
 
     @Override
     public void run() {
-    	try {
-			clientSocket = new Socket(InetAddress.getByName(ServerConstants.IP), ServerConstants.PORT);
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
     }
 
     private void register() {

@@ -10,17 +10,9 @@ public class Server implements Runnable{
     private List<ObjectOutputStream> outputStreams;
     private List<ObjectInputStream> inputStreams;
 
-    private ServerSocket serverSocket;
-
     private int numberOfClients;
 
     public Server() {
-        try {
-            serverSocket = new ServerSocket(ServerConstants.PORT);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
         usernames = new ArrayList<>();
         clients = new ArrayList<>();
         outputStreams = new ArrayList<>();
@@ -29,33 +21,32 @@ public class Server implements Runnable{
         numberOfClients = 0;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        @SuppressWarnings("resource")
+		ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
         Server chatServer = new Server();
-
         Thread serverThread = new Thread(chatServer);
-
+        serverThread.start();
+        
         while(true) {
-            Socket client = chatServer.acceptNewClient();
+            Socket client = serverSocket.accept();
             chatServer.addClient(client);
-            serverThread.start();
-            
+            chatServer.addOutputStream(new ObjectOutputStream(client.getOutputStream()));
+            chatServer.addInputStream(new ObjectInputStream(client.getInputStream()));
         }
+    }
+    
+    public void addInputStream(ObjectInputStream inputStream) {
+    	inputStreams.add(inputStream);
+    }
+    
+    public void addOutputStream(ObjectOutputStream outputStream) {
+    	outputStreams.add(outputStream);
     }
 
     public void addClient(Socket client) {
         clients.add(client);
         ++numberOfClients;
-    }
-
-    public Socket acceptNewClient() {
-        Socket client = null;
-        try {
-            client = serverSocket.accept();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            return client;
-        }
     }
 
     private Object receiveMessage() {

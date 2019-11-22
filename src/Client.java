@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
@@ -28,7 +29,12 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-
+    	try {
+			clientSocket = new Socket(InetAddress.getByName(ServerConstants.IP), ServerConstants.PORT);
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     private void register() {

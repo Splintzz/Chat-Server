@@ -10,13 +10,13 @@ public class Server implements Runnable{
     private List<ObjectOutputStream> outputStreams;
     private List<ObjectInputStream> inputStreams;
 
-    private ServerSocket chatServerSocket;
+    private ServerSocket serverSocket;
 
     private int numberOfClients;
 
     public Server() {
         try {
-            chatServerSocket = new ServerSocket(ServerConstants.PORT);
+            serverSocket = new ServerSocket(ServerConstants.PORT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -36,8 +36,9 @@ public class Server implements Runnable{
 
         while(true) {
             Socket client = chatServer.acceptNewClient();
-
             chatServer.addClient(client);
+            serverThread.start();
+            
         }
     }
 
@@ -49,7 +50,7 @@ public class Server implements Runnable{
     public Socket acceptNewClient() {
         Socket client = null;
         try {
-            client = chatServerSocket.accept();
+            client = serverSocket.accept();
         }catch (IOException e) {
             e.printStackTrace();
         }finally {

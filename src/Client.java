@@ -31,13 +31,20 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
+    	register();
+    }
+
+    private void register() {
     	Message message = new Message();
     	message.setMessageType(MessageType.PROMPT_FOR_MESSAGE);
     	message.setMessage("Please enter a username: ");
     	chatInterface.displayMessage(message);   	
-    }
-
-    private void register() {
+    	
+    	while (chatInterface.getUserInput() == null) {
+    		System.out.print("");
+    	}
+    	clientUsername = chatInterface.getUserInput();
+    	System.out.println(clientUsername);
         //interface pops up a menu prompting for username
         //username is set here
         //username is sent to server to verify if the name is taken or not

@@ -8,6 +8,8 @@ public class ChatInterface extends JFrame {
     private JButton sendButton;
     public JTextArea messageArea;
     private Client client;
+    
+    private String userInput;
 
     public ChatInterface(Client client) {
         this.client = client;
@@ -87,25 +89,24 @@ public class ChatInterface extends JFrame {
 
     private void sendMessage() {
         Message outGoingMessage = assembleMessage();
-
-        ObjectOutputStream outToServer = client.getOutToServerStream();
-
-        try {
-            outToServer.writeObject(outGoingMessage);
-            outToServer.flush();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+        userInput = outGoingMessage.getMessage();
+        messageArea.append(userInput+"\n");
+        textField.setText("");
     }
 
     private Message assembleMessage() {
         String messageText = textField.getText();
 
         Message outGoingMessage = new Message(MessageType.SENDING_MESSAGE, messageText);
-
-        outGoingMessage.setClientUsername(client.getClientUsername());
+        
+        if (client != null)
+        	outGoingMessage.setClientUsername(client.getClientUsername());
 
         return outGoingMessage;
+    }
+    
+    public String getUserInput() {
+    	return userInput;
     }
 
     public void displayMessage(Client client, Message message) {
@@ -119,6 +120,7 @@ public class ChatInterface extends JFrame {
 
     public static void main(String[] args) throws InterruptedException {
         ChatInterface c = new ChatInterface(null);
+        /*
         for(int i=0; i<10; ++i) {
             TimeUnit.SECONDS.sleep(2);
             if(i%2 == 0) {
@@ -127,6 +129,7 @@ public class ChatInterface extends JFrame {
                 c.messageArea.append("Abe: Xerris" + "\n");
             }
         }
+        */
     }
 
 }

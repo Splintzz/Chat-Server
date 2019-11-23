@@ -111,6 +111,10 @@ public class ChatInterface extends JFrame {
     public void displayMessage(Client client, Message message) {
         messageArea.append(client.getClientUsername() + ": " + message.getMessage());
     }
+    
+    public void displayMessage(Message message) {
+        messageArea.append(message.getMessage());
+    }
 
 
     public static void main(String[] args) throws InterruptedException {

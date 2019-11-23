@@ -31,7 +31,10 @@ public class Client implements Runnable {
 
     @Override
     public void run() {
-
+    	Message message = new Message();
+    	message.setMessageType(MessageType.PROMPT_FOR_MESSAGE);
+    	message.setMessage("Please enter a username: ");
+    	chatInterface.displayMessage(message);   	
     }
 
     private void register() {

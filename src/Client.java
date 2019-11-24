@@ -32,6 +32,12 @@ public class Client implements Runnable {
     @Override
     public void run() {
     	register();
+    	try {
+			outToServer.writeObject(clientUsername);
+			outToServer.flush();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
     }
 
     private void register() {

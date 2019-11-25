@@ -10,10 +10,12 @@ public class ChatInterface extends JFrame {
     private Client client;
     
     private String userInput;
-    private boolean sendingMessage = false;
+    private boolean sendingMessage;
 
     public ChatInterface(Client client) {
         this.client = client;
+        userInput = "";
+        sendingMessage = false;
 
         initializeMessageArea();
         initializeComponents();
@@ -77,13 +79,8 @@ public class ChatInterface extends JFrame {
         sendButton.setVisible(true);
         sendButton.setSize(InterfaceConstants.SEND_BUTTON_DIMENSION);
         sendButton.setText(InterfaceConstants.SEND_BUTTON_LABEL);
-        sendButton.addActionListener(e -> {
-            try {                
-				sendMessage();		        
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+        sendButton.addActionListener(e -> {           
+			sendMessage();		  
         });
     }
 
@@ -93,7 +90,7 @@ public class ChatInterface extends JFrame {
         textField.setColumns(InterfaceConstants.TEXT_FIELD_WIDTH);
     }
 
-    private void sendMessage() throws InterruptedException {
+    private void sendMessage() {
         Message outGoingMessage = assembleMessage();
         
         sendingMessage = true;
@@ -115,8 +112,7 @@ public class ChatInterface extends JFrame {
         return outGoingMessage;
     }
     
-    public boolean isSendingMessage() {
-    	
+    public boolean isSendingMessage() { 	
     	return sendingMessage;
     }
     

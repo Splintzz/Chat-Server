@@ -30,7 +30,7 @@ public class Server implements Runnable{
         
         while(true) {
             Socket client = serverSocket.accept();
-            chatServer.addClient(client);     
+            chatServer.addClient(client);
         }
     }
 
@@ -40,16 +40,23 @@ public class Server implements Runnable{
     		System.out.print("");
     	}
     	
-    	ObjectInputStream inputStream = inputStreams.get(numberOfClients - 1);
-
+    	while (true) {
+    		
+    	}
+    		
+    }
+    
+    private void register() {
+    	ObjectInputStream inputStream = null;
+    	inputStream = inputStreams.get(numberOfClients - 1);
+    	
 		try {
 			usernames.add((String) inputStream.readObject());
 		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     		
-		System.out.println(usernames.get(0));
+		System.out.println(usernames.get(numberOfClients - 1));
     }
 
     public void addClient(Socket client) throws IOException {
@@ -57,6 +64,7 @@ public class Server implements Runnable{
     	inputStreams.add(new ObjectInputStream(client.getInputStream()));
     	outputStreams.add(new ObjectOutputStream(client.getOutputStream()));
         ++numberOfClients;
+        register();
     }
 
     private Object receiveMessage() {

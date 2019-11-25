@@ -10,6 +10,7 @@ public class ChatInterface extends JFrame {
     private Client client;
     
     private String userInput;
+    private boolean sendingMessage = false;
 
     public ChatInterface(Client client) {
         this.client = client;
@@ -77,7 +78,12 @@ public class ChatInterface extends JFrame {
         sendButton.setSize(InterfaceConstants.SEND_BUTTON_DIMENSION);
         sendButton.setText(InterfaceConstants.SEND_BUTTON_LABEL);
         sendButton.addActionListener(e -> {
-            sendMessage();
+            try {                
+				sendMessage();		        
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
         });
     }
 
@@ -87,11 +93,15 @@ public class ChatInterface extends JFrame {
         textField.setColumns(InterfaceConstants.TEXT_FIELD_WIDTH);
     }
 
-    private void sendMessage() {
+    private void sendMessage() throws InterruptedException {
         Message outGoingMessage = assembleMessage();
-        userInput = outGoingMessage.getMessage();
+        
+        sendingMessage = true;
+        userInput = outGoingMessage.getMessage();       
         messageArea.append(userInput+"\n");
         textField.setText("");
+        sendingMessage = false;
+        
     }
 
     private Message assembleMessage() {
@@ -103,6 +113,11 @@ public class ChatInterface extends JFrame {
         	outGoingMessage.setClientUsername(client.getClientUsername());
 
         return outGoingMessage;
+    }
+    
+    public boolean isSendingMessage() {
+    	
+    	return sendingMessage;
     }
     
     public String getUserInput() {
@@ -120,16 +135,7 @@ public class ChatInterface extends JFrame {
 
     public static void main(String[] args) throws InterruptedException {
         ChatInterface c = new ChatInterface(null);
-        /*
-        for(int i=0; i<10; ++i) {
-            TimeUnit.SECONDS.sleep(2);
-            if(i%2 == 0) {
-                c.messageArea.append("Brian: Xerris" + "\n");
-            }else {
-                c.messageArea.append("Abe: Xerris" + "\n");
-            }
-        }
-        */
+
     }
 
 }

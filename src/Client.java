@@ -32,12 +32,10 @@ public class Client implements Runnable {
     @Override
     public void run() {
     	register();
-    	try {
-			outToServer.writeObject(clientUsername);
-			outToServer.flush();
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}
+    	
+    	while(true) {
+    		
+    	}
     }
 
     private void register() {
@@ -50,7 +48,13 @@ public class Client implements Runnable {
     		System.out.print("");
     	}
     	clientUsername = chatInterface.getUserInput();
-    	System.out.println(clientUsername);
+    	
+    	try {
+			outToServer.writeObject(clientUsername);
+			outToServer.flush();
+		} catch (IOException e) {			
+			e.printStackTrace();
+		}
         //interface pops up a menu prompting for username
         //username is set here
         //username is sent to server to verify if the name is taken or not

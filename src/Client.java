@@ -24,7 +24,6 @@ public class Client implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-
         Thread thread = new Thread(new Client());
         thread.start();
     }
@@ -32,29 +31,27 @@ public class Client implements Runnable {
     @Override
     public void run() {
     	register();
-    	
+
     	while(true) {
-    		
+    		try {
+				chatInterface.displayMessage((String) inFromServer.readObject()+"\n");  
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			}
     	}
     }
 
     private void register() {
     	Message message = new Message();
     	message.setMessageType(MessageType.PROMPT_FOR_MESSAGE);
-    	message.setMessage("Please enter a username: ");
+    	message.setMessage("Please enter a username: \n");
     	chatInterface.displayMessage(message);   	
     	
     	while (chatInterface.getUserInput() == null) {
     		System.out.print("");
     	}
     	clientUsername = chatInterface.getUserInput();
-    	
-    	try {
-			outToServer.writeObject(clientUsername);
-			outToServer.flush();
-		} catch (IOException e) {			
-			e.printStackTrace();
-		}
+
         //interface pops up a menu prompting for username
         //username is set here
         //username is sent to server to verify if the name is taken or not

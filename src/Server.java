@@ -39,32 +39,41 @@ public class Server implements Runnable{
     	while (numberOfClients == 0) {
     		System.out.print("");
     	}
+    	int connectedClients = 0;
+    	String str = "";
     	
     	while (true) {
-    		
+    		if (numberOfClients > connectedClients) {	//temporary solution
+    			connectedClients++;
+    			System.out.println("registering");
+    			register();
+    		}
+    		try {
+        		str = (String) inputStreams.get(numberOfClients - 1).readObject();	//blocks for input
+    			System.out.println(str);
+        		echoMessage(str);
+    		} catch (ClassNotFoundException | IOException e) {
+    			e.printStackTrace();
+    		}		
     	}
     		
     }
     
-    private void register() {
-    	ObjectInputStream inputStream = null;
-    	inputStream = inputStreams.get(numberOfClients - 1);
-    	
+    private void register() {	
 		try {
-			usernames.add((String) inputStream.readObject());
+			String name = ((String) inputStreams.get(numberOfClients - 1).readObject());
+			usernames.add(name);
+			outputStreams.get(numberOfClients - 1).writeObject("Welcome "+name+"!");
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
-		}
-    		
-		System.out.println(usernames.get(numberOfClients - 1));
+		}		
     }
 
     public void addClient(Socket client) throws IOException {
         clients.add(client);
     	inputStreams.add(new ObjectInputStream(client.getInputStream()));
     	outputStreams.add(new ObjectOutputStream(client.getOutputStream()));
-        ++numberOfClients;
-        register();
+        ++numberOfClients; 
     }
 
     private Object receiveMessage() {
@@ -79,12 +88,11 @@ public class Server implements Runnable{
         return receivedObject;
     }
 
-    private void echoMessage(Message message) {
+    private void echoMessage(String message) {
         try {
-            for (int client = 0; client < clients.size(); ++client) {
-                ObjectOutputStream outToClient = (ObjectOutputStream) (clients.get(client).getOutputStream());
-                outToClient.writeObject(message);
-                outToClient.flush();
+            for (int client = 0; client < clients.size(); client++) {
+                outputStreams.get(client).writeObject(message);
+                outputStreams.get(client).flush();               
             }
         }catch (Exception e) {
             e.printStackTrace();

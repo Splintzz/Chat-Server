@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.concurrent.TimeUnit;
 
@@ -10,12 +11,10 @@ public class ChatInterface extends JFrame {
     private Client client;
     
     private String userInput;
-    private boolean sendingMessage;
 
     public ChatInterface(Client client) {
         this.client = client;
-        userInput = "";
-        sendingMessage = false;
+        userInput = null;
 
         initializeMessageArea();
         initializeComponents();
@@ -79,8 +78,13 @@ public class ChatInterface extends JFrame {
         sendButton.setVisible(true);
         sendButton.setSize(InterfaceConstants.SEND_BUTTON_DIMENSION);
         sendButton.setText(InterfaceConstants.SEND_BUTTON_LABEL);
-        sendButton.addActionListener(e -> {           
-			sendMessage();		  
+        sendButton.addActionListener(e -> {
+			try {
+				sendMessage();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		  
         });
     }
 
@@ -90,15 +94,13 @@ public class ChatInterface extends JFrame {
         textField.setColumns(InterfaceConstants.TEXT_FIELD_WIDTH);
     }
 
-    private void sendMessage() {
-        Message outGoingMessage = assembleMessage();
-        
-        sendingMessage = true;
+    private void sendMessage() throws IOException {
+        Message outGoingMessage = assembleMessage();	
         userInput = outGoingMessage.getMessage();       
-        messageArea.append(userInput+"\n");
-        textField.setText("");
-        sendingMessage = false;
-        
+        textField.setText("");      
+       
+        client.getOutToServerStream().writeObject(userInput);
+        client.getOutToServerStream().flush();
     }
 
     private Message assembleMessage() {
@@ -112,12 +114,12 @@ public class ChatInterface extends JFrame {
         return outGoingMessage;
     }
     
-    public boolean isSendingMessage() { 	
-    	return sendingMessage;
+    public void setUserInput(String input) {
+    	userInput = input;
     }
     
     public String getUserInput() {
-    	return userInput;
+       return userInput;
     }
 
     public void displayMessage(Client client, Message message) {
@@ -127,11 +129,13 @@ public class ChatInterface extends JFrame {
     public void displayMessage(Message message) {
         messageArea.append(message.getMessage());
     }
-
+    
+    public void displayMessage(String message) {
+    	messageArea.append(message);
+    }
 
     public static void main(String[] args) throws InterruptedException {
-        ChatInterface c = new ChatInterface(null);
-
+        ChatInterface c = new ChatInterface(null);       
     }
 
 }

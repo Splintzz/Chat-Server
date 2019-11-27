@@ -34,7 +34,7 @@ public class Client implements Runnable {
 
     	while(true) {
     		try {
-				chatInterface.displayMessage((String) inFromServer.readObject()+"\n");  
+				chatInterface.displayMessage((String) inFromServer.readObject()+"\n");				  
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}

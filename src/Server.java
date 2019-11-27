@@ -2,100 +2,65 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class Server implements Runnable{
-    private List<String> usernames;
-    private List<Socket> clients;
-    private List<ObjectOutputStream> outputStreams;
-    private List<ObjectInputStream> inputStreams;
+    private String username;
+    private Socket client;
+    private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
+    
+    private static Queue<String> queue = new LinkedList<String>();
+    private static List<Long> threads = new ArrayList<>();
 
-    private int numberOfClients;
-
-    public Server() {
-        usernames = new ArrayList<>();
-        clients = new ArrayList<>();
-        outputStreams = new ArrayList<>();
-        inputStreams = new ArrayList<>();
-
-        numberOfClients = 0;
+    public Server(Socket socket) throws IOException {
+        username = "";
+        client = socket;
+        outputStream = new ObjectOutputStream(socket.getOutputStream());
+        inputStream = new ObjectInputStream(socket.getInputStream());
     }
 
     public static void main(String[] args) throws IOException {
         @SuppressWarnings("resource")
 		ServerSocket serverSocket = new ServerSocket(ServerConstants.PORT);
-        Server chatServer = new Server();
-        Thread serverThread = new Thread(chatServer);
-        serverThread.start();
-        
+        queue.add("hi");
         while(true) {
-            Socket client = serverSocket.accept();
-            chatServer.addClient(client);
+            Socket client = serverSocket.accept();   
+            new Thread(new Server(client)).start();          
         }
     }
 
     @Override
     public void run() {
-    	while (numberOfClients == 0) {
-    		System.out.print("");
-    	}
-    	int connectedClients = 0;
-    	String str = "";
-    	
-    	while (true) {
-    		if (numberOfClients > connectedClients) {	//temporary solution
-    			connectedClients++;
-    			System.out.println("registering");
-    			register();
-    		}
-    		try {
-        		str = (String) inputStreams.get(numberOfClients - 1).readObject();	//blocks for input
-    			System.out.println(str);
-        		echoMessage(str);
-    		} catch (ClassNotFoundException | IOException e) {
-    			e.printStackTrace();
-    		}		
-    	}
-    		
+    	register();
+
     }
     
-    private void register() {	
+    private void receiveMessage() throws ClassNotFoundException, IOException {    	
+    	queue.add((String) inputStream.readObject());
+    }
+    
+    private void sendMessageAll() throws ClassNotFoundException, IOException {
+    	for (int i = 10; i < (threads.size()+10); i++) {
+    		if (Thread.currentThread().getId() == i) {
+    			outputStream.writeObject(queue.remove());
+    			outputStream.flush();
+    		}		
+    	}	
+	}
+
+	private void register() {
+		threads.add(Thread.currentThread().getId());
 		try {
-			String name = ((String) inputStreams.get(numberOfClients - 1).readObject());
-			usernames.add(name);
-			outputStreams.get(numberOfClients - 1).writeObject("Welcome "+name+"!");
+    		String name = (String) inputStream.readObject();
+			username = name;
+			outputStream.writeObject("Welcome "+name+"!");
+			outputStream.flush();
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}		
     }
 
-    public void addClient(Socket client) throws IOException {
-        clients.add(client);
-    	inputStreams.add(new ObjectInputStream(client.getInputStream()));
-    	outputStreams.add(new ObjectOutputStream(client.getOutputStream()));
-        ++numberOfClients; 
-    }
-
-    private Object receiveMessage() {
-        Object receivedObject = null;
-
-        try {
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return receivedObject;
-    }
-
-    private void echoMessage(String message) {
-        try {
-            for (int client = 0; client < clients.size(); client++) {
-                outputStreams.get(client).writeObject(message);
-                outputStreams.get(client).flush();               
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

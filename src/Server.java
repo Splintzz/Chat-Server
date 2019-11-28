@@ -8,24 +8,20 @@ import java.util.Queue;
 
 public class Server implements Runnable{
     private String username;
-    private Socket client;
-    private ObjectOutputStream outputStream;
     private ObjectInputStream inputStream;
     
+    private static List<ObjectOutputStream> outputStreams = new ArrayList<ObjectOutputStream>();   
     private static Queue<String> queue = new LinkedList<String>();
-    private static List<Long> threads = new ArrayList<>();
-    private static String message = "null";
 
     public Server(ObjectOutputStream outputStream) throws IOException {
         username = "";
         inputStream = null;
-        this.outputStream = outputStream;
+        outputStreams.add(outputStream);
     }
     
     public Server(ObjectInputStream inputStream) throws IOException {
         username = "";
         this.inputStream = inputStream;
-        outputStream = null;
     }
 
     public static void main(String[] args) throws IOException {
@@ -41,55 +37,55 @@ public class Server implements Runnable{
 
     @Override
     public void run() {
-    	if (outputStream == null) {
+    	if (inputStream != null) {
     		register();
-    	}
-
-    	while (true) {
-	    	try {
-	    		System.out.print("");
-	    		if (outputStream == null)
-	    			receiveMessage();
-	    		else if (inputStream == null)
-	    			sendMessage();
-			} catch (ClassNotFoundException | IOException e) {
+    		while (true) {
+        		System.out.print("");
+				receiveMessage();
+    		}
+    	}  	
+    	else {
+    		while (true) {
+    			System.out.print("");
+    	    	try {
+	    			if (!queue.isEmpty())
+	    				sendMessage();
+    	    	} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
-			}
+    	    	}			
+    		}
     	}
-
     }
     
-    private void receiveMessage() throws ClassNotFoundException, IOException {    	
-    	queue.add(username+ ": " + (String) inputStream.readObject());    	
+    private void receiveMessage() {
+    	try {
+    		String string = (String) inputStream.readObject();
+    		System.out.println("");
+    		queue.add(username + ": " + string);
+    		System.out.println("");
+    	} catch (ClassNotFoundException | IOException e) {
+    		System.out.println("Error receiving messages.");
+    		System.exit(0);
+    	}
     }
     
-    private void sendMessage() throws ClassNotFoundException, IOException {
-    	synchronized(this) {
-    		if (!queue.isEmpty()) {
-    			message = queue.peek();
-    		}
-    	} 	
-    	synchronized(this) {
-    		if (!queue.isEmpty()) {
-    			outputStream.writeObject(message);
-    			outputStream.flush();
-    		}
-    	} 		
-    	synchronized(this) {
-    		if (!queue.isEmpty()) {
-    			queue.remove();
-    		}
-    	} 	
-
+    private void sendMessage() throws ClassNotFoundException, IOException {    	
+    	String string = "";
+    	if (!queue.isEmpty())
+    		string = queue.remove();
+    	for (int i = 0; i < outputStreams.size(); i++) {
+    		outputStreams.get(i).writeObject(string);
+    		outputStreams.get(i).flush();
+    	}
 	}
 
 	private void register() {
-		threads.add(Thread.currentThread().getId());
+
 		try {
     		String name = (String) inputStream.readObject();
 			username = name;
 			queue.add("Welcome "+name+"!");
-			System.out.println("Registered!");
+			System.out.println("");
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}		

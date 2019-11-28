@@ -34,10 +34,9 @@ public class Client implements Runnable {
 
     	while(true) {
     		try {
-    			//System.out.println((String) inFromServer.readObject()+"\n");
 				chatInterface.displayMessage((String) inFromServer.readObject()+"\n");				  
 			} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
+				System.exit(0);				
 			}
     	}
     }
@@ -56,20 +55,6 @@ public class Client implements Runnable {
         //interface pops up a menu prompting for username
         //username is set here
         //username is sent to server to verify if the name is taken or not
-    }
-
-    private void receiveMessage() {
-        try {
-            Message receivedMessage = (Message) inFromServer.readObject();
-
-            displayMessage(receivedMessage);
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void displayMessage(Message receivedMessage) {
-        chatInterface.displayMessage(this, receivedMessage);
     }
 
     public String getClientUsername() {

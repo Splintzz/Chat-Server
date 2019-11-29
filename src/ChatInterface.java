@@ -67,7 +67,7 @@ public class ChatInterface extends JFrame {
         inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.X_AXIS));
 
         inputPanel.add(textField);
-        inputPanel.add(sendButton);
+        inputPanel.add(sendButton);    
 
         pack();
     }
@@ -97,7 +97,7 @@ public class ChatInterface extends JFrame {
     private void sendMessage() throws IOException {
         Message outGoingMessage = assembleMessage();	
         userInput = outGoingMessage.getMessage();       
-        textField.setText("");      
+        textField.setText("");
        
         client.getOutToServerStream().writeObject(userInput);
         client.getOutToServerStream().flush();
@@ -112,6 +112,11 @@ public class ChatInterface extends JFrame {
         	outGoingMessage.setClientUsername(client.getClientUsername());
 
         return outGoingMessage;
+    }
+    
+    public void disableInput() {
+    	textField.setVisible(false);
+    	sendButton.setVisible(false);
     }
     
     public void setUserInput(String input) {
@@ -135,7 +140,7 @@ public class ChatInterface extends JFrame {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        ChatInterface c = new ChatInterface(null);       
+        ChatInterface c = new ChatInterface(null);
     }
 
 }

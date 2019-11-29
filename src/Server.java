@@ -6,11 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import com.sun.imageio.spi.OutputStreamImageOutputStreamSpi;
+
 public class Server implements Runnable{
-    private String username;
+    private String username;    
+    private boolean activeThread = true;
     private ObjectInputStream inputStream;
+    private ObjectOutputStream outputStream;
     
-    private static List<ObjectOutputStream> outputStreams = new ArrayList<ObjectOutputStream>();   
+    private static List<ObjectOutputStream> outputStreams = new ArrayList<ObjectOutputStream>();
     private static Queue<String> queue = new LinkedList<String>();
 
     public Server(ObjectOutputStream outputStream) throws IOException {
@@ -22,6 +26,7 @@ public class Server implements Runnable{
     public Server(ObjectInputStream inputStream) throws IOException {
         username = "";
         this.inputStream = inputStream;
+        outputStream = outputStreams.get(outputStreams.size() - 1);
     }
 
     public static void main(String[] args) throws IOException {
@@ -39,7 +44,7 @@ public class Server implements Runnable{
     public void run() {
     	if (inputStream != null) {
     		register();
-    		while (true) {
+    		while (true && activeThread == true) {
         		System.out.print("");
 				receiveMessage();
     		}
@@ -57,19 +62,39 @@ public class Server implements Runnable{
     	}
     }
     
+    private void disconnect() throws IOException {
+    	outputStream.writeObject("Disconnected!");
+		outputStream.flush();
+		
+		for (int i = 0; i < outputStreams.size(); i++) {
+			if (outputStreams.get(i) == outputStream) {
+				outputStreams.remove(i);
+				break;
+			}
+		}
+		inputStream.close();
+		outputStream.close();
+		activeThread = false;
+	}
+    
     private void receiveMessage() {
     	try {
     		String string = (String) inputStream.readObject();
-    		System.out.println("");
-    		queue.add(username + ": " + string);
-    		System.out.println("");
+    		if (string.equals(".")) {
+    			disconnect();
+    		}
+    		else {
+    			System.out.println("");
+        		queue.add(username + ": " + string);
+        		System.out.println("");
+    		}		
     	} catch (ClassNotFoundException | IOException e) {
     		System.out.println("Error receiving messages.");
     		System.exit(0);
     	}
     }
-    
-    private void sendMessage() throws ClassNotFoundException, IOException {    	
+
+	private void sendMessage() throws ClassNotFoundException, IOException {    	
     	String string = "";
     	if (!queue.isEmpty())
     		string = queue.remove();
@@ -78,9 +103,8 @@ public class Server implements Runnable{
     		outputStreams.get(i).flush();
     	}
 	}
-
+	
 	private void register() {
-
 		try {
     		String name = (String) inputStream.readObject();
 			username = name;
@@ -90,5 +114,4 @@ public class Server implements Runnable{
 			e.printStackTrace();
 		}		
     }
-
 }

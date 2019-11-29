@@ -32,13 +32,27 @@ public class Client implements Runnable {
     public void run() {
     	register();
 
+    	String message = "";
     	while(true) {
     		try {
-				chatInterface.displayMessage((String) inFromServer.readObject()+"\n");				  
-			} catch (ClassNotFoundException | IOException e) {
-				System.exit(0);				
+    			message = (String) inFromServer.readObject()+"\n";
+    			chatInterface.displayMessage(message);	
+    						  
+			} catch (ClassNotFoundException e) {
+				System.out.println("Error receiving message.");	
+			} catch (IOException e) {
+				System.out.println("Closing...");
+				break;
 			}
-    	}
+    	}			
+		try {
+			outToServer.close();
+			inFromServer.close();
+			clientSocket.close();
+			chatInterface.disableInput();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 
     private void register() {
@@ -51,10 +65,6 @@ public class Client implements Runnable {
     		System.out.print("");
     	}
     	clientUsername = chatInterface.getUserInput();
-
-        //interface pops up a menu prompting for username
-        //username is set here
-        //username is sent to server to verify if the name is taken or not
     }
 
     public String getClientUsername() {

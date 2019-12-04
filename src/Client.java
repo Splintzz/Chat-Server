@@ -4,6 +4,8 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Client implements Runnable {
     private String clientUsername;
@@ -31,12 +33,17 @@ public class Client implements Runnable {
     @Override
     public void run() {
     	register();
+ 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");  
+ 	    LocalDateTime now = LocalDateTime.now();  	   
 
-    	String message = "";
+ 	    String time = dtf.format(now);
+    	String message = "";    	
     	while(true) {
     		try {
     			message = (String) inFromServer.readObject()+"\n";
-    			chatInterface.displayMessage(message);	
+    			now = LocalDateTime.now();
+    			time = dtf.format(now);
+    			chatInterface.displayMessage(time + " " + message);	
     						  
 			} catch (ClassNotFoundException e) {
 				System.out.println("Error receiving message.");	

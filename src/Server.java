@@ -15,18 +15,17 @@ public class Server implements Runnable{
     private ObjectOutputStream outputStream;
     
     private static List<ObjectOutputStream> outputStreams = new ArrayList<ObjectOutputStream>();
-    private static Queue<String> queue = new LinkedList<String>();
 
-    public Server(ObjectOutputStream outputStream) throws IOException {
+    public Server(ObjectOutputStream outputStream, ObjectInputStream inputStream) throws IOException {
         username = "";
-        inputStream = null;
         outputStreams.add(outputStream);
+        this.inputStream = inputStream;
+        this.outputStream = outputStream;
     }
     
     public Server(ObjectInputStream inputStream) throws IOException {
         username = "";
-        this.inputStream = inputStream;
-        outputStream = outputStreams.get(outputStreams.size() - 1);
+        
     }
 
     public static void main(String[] args) throws IOException {
@@ -35,8 +34,7 @@ public class Server implements Runnable{
 
         while(true) {
             Socket client = serverSocket.accept();
-            new Thread(new Server(new ObjectOutputStream(client.getOutputStream()))).start();
-            new Thread(new Server(new ObjectInputStream(client.getInputStream()))).start();
+            new Thread(new Server(new ObjectOutputStream(client.getOutputStream()), new ObjectInputStream(client.getInputStream()))).start();
         }
     }
 
@@ -49,17 +47,6 @@ public class Server implements Runnable{
 				receiveMessage();
     		}
     	}  	
-    	else {
-    		while (true) {
-    			System.out.print("");
-    	    	try {
-	    			if (!queue.isEmpty())
-	    				sendMessage();
-    	    	} catch (ClassNotFoundException | IOException e) {
-				e.printStackTrace();
-    	    	}			
-    		}
-    	}
     }
     
     private void disconnect() throws IOException {
@@ -84,9 +71,7 @@ public class Server implements Runnable{
     			disconnect();
     		}
     		else {
-    			System.out.println("");
-        		queue.add(username + ": " + string);
-        		System.out.println("");
+        		sendMessage(username + ": " + string);
     		}		
     	} catch (ClassNotFoundException | IOException e) {
     		System.out.println("Error receiving messages.");
@@ -94,10 +79,7 @@ public class Server implements Runnable{
     	}
     }
 
-	private void sendMessage() throws ClassNotFoundException, IOException {    	
-    	String string = "";
-    	if (!queue.isEmpty())
-    		string = queue.remove();
+	private void sendMessage(String string) throws ClassNotFoundException, IOException {    	
     	for (int i = 0; i < outputStreams.size(); i++) {
     		outputStreams.get(i).writeObject(string);
     		outputStreams.get(i).flush();
@@ -108,8 +90,7 @@ public class Server implements Runnable{
 		try {
     		String name = (String) inputStream.readObject();
 			username = name;
-			queue.add("Welcome "+name+"!");
-			System.out.println("");
+			sendMessage("Welcome "+name+"!");
 		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}		

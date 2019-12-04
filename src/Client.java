@@ -3,7 +3,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -34,7 +33,7 @@ public class Client implements Runnable {
     public void run() {
     	register();
  	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");  
- 	    LocalDateTime now = LocalDateTime.now();  	   
+ 	    LocalDateTime now = LocalDateTime.now(); 
 
  	    String time = dtf.format(now);
     	String message = "";    	

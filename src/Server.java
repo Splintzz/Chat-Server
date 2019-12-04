@@ -2,11 +2,8 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
-import com.sun.imageio.spi.OutputStreamImageOutputStreamSpi;
 
 public class Server implements Runnable{
     private String username;    
@@ -42,7 +39,7 @@ public class Server implements Runnable{
     public void run() {
     	if (inputStream != null) {
     		register();
-    		while (true && activeThread == true) {
+    		while (activeThread == true) {
         		System.out.print("");
 				receiveMessage();
     		}
